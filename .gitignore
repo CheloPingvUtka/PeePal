@@ -1,0 +1,36 @@
+# Игнорируем виртуальное окружение
+venv/
+.venv/
+env/
+*.pyc
+__pycache__/
+
+# Конфиденциальные файлы и ключи
+*.env
+.env
+
+# База данных и миграции
+db.sqlite3
+*.sqlite3
+*.log
+*.pot
+*.mo
+
+# Кэш и временные файлы
+*.swp
+*.swo
+*.DS_Store
+*.bak
+
+# IDE-файлы (PyCharm, VSCode)
+.idea/
+.vscode/
+*.code-workspace
+
+# Docker
+docker-compose.override.yml
+
+# Node.js (если используешь в проекте)
+node_modules/
+package-lock.json
+yarn.lock
