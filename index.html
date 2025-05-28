@@ -59,8 +59,6 @@
       </div>
 
       <div class="filters-wrapper">
-        <label>Фильтры</label>
-        <select id="filters-type" name="filtersType"></select>
         <div id="filters"></div>
       </div>
       
@@ -113,151 +111,10 @@
 
   <script type="module" src="./src/index.js"></script>
   <!-- скрипт для заполнения формы -->
+  <!-- Временноый скрипт вызова формы 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('add-location-form');
-      const categorySelect = document.getElementById('location-type');
-      const filtersContainer = document.getElementById('filters');
-
-      loadCategoriesAndFilters();
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        try {
-          // --- СБОР ДАННЫХ ---
-          const address = document.getElementById('address').value.trim();
-          const description = document.getElementById('description').value.trim();
-          const directions = document.getElementById('directions').value.trim();
-          const category = categorySelect.value;
-          const filters = [...filtersContainer.querySelectorAll('input[name="filters"]:checked')].map(el => el.value);
-          const cleanliness = document.querySelector('input[name="cleanliness"]:checked')?.value;
-          const convenience = document.querySelector('input[name="convenience"]:checked')?.value;
-          const other = document.querySelector('input[name="other"]:checked')?.value;
-          const selectedCategoryId = parseInt(document.getElementById('location-type').value);
-
-          const latitude = 55.751244;  // заменить на координаты с карты
-          const longitude = 37.618423;
-
-          // --- ВАЛИДАЦИЯ ПЕРЕД ОТПРАВКОЙ ---
-          if (!address) return alert('Укажите адрес');
-          if (!category) return alert('Выберите категорию');
-          if (!latitude || !longitude) return alert('Не определены координаты');
-          if (!cleanliness || !convenience || !other) return alert('Поставьте оценки по всем критериям');
-
-          const locationData = {
-            address,
-            description,
-            directions,
-            category_id: selectedCategoryId,
-            city_name: 'Москва',
-            latitude,
-            longitude,
-            filters,
-            user_id: 1, // ← заменить на авторизованного пользователя
-            cleanliness,
-            convenience,
-            other
-          };
-          console.log('[DEBUG] locationData:', locationData);
-
-          // --- ОТПРАВКА ЛОКАЦИИ ---
-          const locationRes = await fetch('http://127.0.0.1:8000/api/locations/locations/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(locationData)
-          });
-
-          const locationJson = await locationRes.json();
-
-          if (!locationRes.ok) {
-            console.error('Ошибка создания локации:', locationJson);
-            return alert(`Ошибка при создании локации: ${locationJson?.detail || JSON.stringify(locationJson)}`);
-          }
-
-          const locationId = locationJson.id;
-          console.log('Локация успешно создана, ID:', locationId);
-
-          // --- ОТПРАВКА ФОТО ---
-          const photoInput = document.getElementById('photo-input');
-          const files = photoInput.files;
-
-          if (files.length > 0) {
-            const formData = new FormData();
-            formData.append('location', locationId);
-
-            for (let file of files) {
-              formData.append('images', file);
-            }
-
-            const photoRes = await fetch('http://127.0.0.1:8000/api/reviews/upload-multiple/', {
-              method: 'POST',
-              body: formData
-            });
-
-            const photoJson = await photoRes.json();
-
-            if (!photoRes.ok) {
-              console.error('Ошибка загрузки фото:', photoJson);
-              return alert(`Фотографии не загрузились: ${JSON.stringify(photoJson)}`);
-            }
-
-            console.log('Фотографии успешно загружены:', photoJson);
-          } else {
-            console.warn('Файлы не выбраны — фото не загружались');
-          }
-
-          alert('Локация и фотографии успешно добавлены!');
-          form.reset();
-
-        } catch (error) {
-          console.error('Непредвиденная ошибка:', error);
-          alert('Что-то пошло не так. Проверь консоль разработчика.');
-        }
-      });
-    });
-
-    // --- ПОДГРУЗКА КАТЕГОРИЙ И ФИЛЬТРОВ ---
-    async function loadCategoriesAndFilters() {
-      try {
-        const [catRes, filterRes] = await Promise.all([
-          fetch('http://127.0.0.1:8000/api/locations/categories/'),
-          fetch('http://127.0.0.1:8000/api/locations/filters/')
-        ]);
-
-        const categories = await catRes.json();
-        const filters = await filterRes.json();
-
-        const categorySelect = document.getElementById('location-type');
-        categorySelect.innerHTML = '';
-        categories.forEach(cat => {
-          const option = document.createElement('option');
-          option.value = cat.id;
-          option.textContent = cat.category_name;
-          categorySelect.appendChild(option);
-        });
-
-        const filtersContainer = document.getElementById('filters');
-        filtersContainer.innerHTML = '';
-        filters.forEach(filter => {
-          const label = document.createElement('label');
-          label.style.display = 'block';
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.name = 'filters';
-          checkbox.value = filter.id;
-          label.appendChild(checkbox);
-          label.append(` ${filter.filter_name}`);
-          filtersContainer.appendChild(label);
-        });
-      } catch (e) {
-        console.error('Ошибка загрузки категорий или фильтров:', e);
-        alert('Ошибка загрузки фильтров или категорий. Проверь подключение.');
-      }
-    }
 
   </script>
-  <!-- Временноый скрипт вызова формы 
   <script>
    const btnAddLocation = document.getElementById('open-form-btn');
    const formAddLocation = document.getElementById('location-modal');
