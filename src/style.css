@@ -253,5 +253,29 @@ button svg {
     max-width: 300px;
     text-align: center;
   }
-  
-  
+
+
+/* подсказки для адреса */
+#address-suggestions {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  font-family: sans-serif;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+#address-suggestions li {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 14px;
+  color: #333;
+}
+
+#address-suggestions li:hover {
+  background-color: #f0f0f0;
+}

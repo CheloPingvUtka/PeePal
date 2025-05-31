@@ -1,3 +1,7 @@
+//import {coords} from './add-location';
+import { coords } from './coordinates';
+
+
 let allFilters = [];
 
 export async function form() {
@@ -28,13 +32,11 @@ export async function form() {
       const photoInput = document.getElementById('photo-input');
       const files = photoInput.files;
 
-      const latitude = 55.751244;  // заменить на координаты с карты
-      const longitude = 37.618423;
 
       // --- ВАЛИДАЦИЯ ---
       if (!address) return alert('Укажите адрес');
       if (!selectedCategoryId) return alert('Выберите категорию');
-      if (!latitude || !longitude) return alert('Не определены координаты');
+      if (isNaN(coords.lat) || isNaN(coords.lng)) return alert('Не определены координаты');
       if (!cleanliness || !convenience || !other) return alert('Поставьте оценки по всем критериям');
       if (!files || files.length === 0) return alert('Пожалуйста, загрузите хотя бы одно фото');
 
@@ -44,8 +46,8 @@ export async function form() {
         directions,
         category_id: selectedCategoryId,
         city_name: 'Москва',
-        latitude,
-        longitude,
+        latitude: coords.lat,
+        longitude: coords.lng,
         filters: selectedFilters,
         user_id: 1, // заменить на текущего пользователя
         cleanliness,
@@ -94,6 +96,7 @@ export async function form() {
   });
 }
 
+
 async function loadCategoriesAndFilters() {
   try {
     const [catRes, filterRes] = await Promise.all([
@@ -124,6 +127,7 @@ async function loadCategoriesAndFilters() {
     alert('Ошибка загрузки фильтров или категорий. Проверь подключение к API.');
   }
 }
+
 
 function renderFiltersByCategory(categoryId) {
   const filtersContainer = document.getElementById('filters');

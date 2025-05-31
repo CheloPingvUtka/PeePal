@@ -49,7 +49,8 @@
 
       <div class="location-input">
         <label for="address">Адрес</label>
-        <input type="text" id="address" name="address" placeholder="Введите адрес или выберите на карте" />
+        <input type="text" id="address" name="address" placeholder="Введите адрес или выберите на карте" autocomplete="off"/>
+        <ul id="address-suggestions" class="suggestions-list"></ul>
         <div id="map" style="height: 60vw; width: 100%; border-radius: 3vw; overflow: hidden;"></div>
       </div>
 

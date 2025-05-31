@@ -40,6 +40,8 @@ async function start() {
         zoom: 13,
         key: 'e417529f-6cc7-4e40-b743-ba94b52744f5',
     });
+    
+
 
     const controlContent = `
     <div class="buttonRoot" id="find-me">
@@ -99,4 +101,6 @@ async function start() {
     .getContainer()
     .querySelector('#find-me')
     .addEventListener('click', geoFindMe);
+
+
 }
