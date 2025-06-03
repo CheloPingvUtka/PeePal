@@ -44,16 +44,18 @@
         <label for="photo-input">Загрузить фото</label>
         <label class="custom-file-input" for="photo-input">Выбрать файлы</label>
         <input type="file" id="photo-input" accept="image/*" multiple />
-        <div id="photo-preview"></div>
+        <div id="photo-preview" class="preview-container"></div>
       </div>
-
-      <div class="location-input">
-        <label for="address">Адрес</label>
-        <input type="text" id="address" name="address" placeholder="Введите адрес или выберите на карте" autocomplete="off"/>
-        <ul id="address-suggestions" class="suggestions-list"></ul>
-        <div id="map" style="height: 60vw; width: 100%; border-radius: 3vw; overflow: hidden;"></div>
-      </div>
-
+      <div>
+        
+        
+        <div class="location-input">
+          <label for="address">Адрес</label>
+          <input type="text" id="address" name="address" placeholder="Введите адрес или выберите на карте" autocomplete="off"/>
+          <ul id="address-suggestions" class="suggestions-list"></ul>
+          <div id="map" style="height: 60vw; width: 100%; border-radius: 3vw; overflow: hidden;"></div>
+        </div>
+        
       <div class="select-wrapper">
         <label for="location-type">Тип локации</label>
         <select id="location-type" name="locationType"></select>

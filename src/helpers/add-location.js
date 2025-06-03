@@ -117,7 +117,7 @@ async function startForm() {
                 const res = await fetch(`https://catalog.api.2gis.com/3.0/items/byid?id=${item.id}&fields=items.point&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`);
                 const data = await res.json();
                 const point = data?.result?.items?.[0]?.point;
-
+                
                 if (point && point.lon && point.lat) {
                 //selectedCoords = [parseFloat(point.lon), parseFloat(point.lat)];
                 setCoordinates(point.lat, point.lon);
