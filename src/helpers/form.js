@@ -1,4 +1,3 @@
-//import {coords} from './add-location';
 import { coords } from './coordinates';
 
 
@@ -56,6 +55,29 @@ export async function form() {
     renderFiltersByCategory(selectedId);
   });
   
+  //Определение города
+  async function getCityOrRegionName(lat, lon) {
+    const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lon}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
+
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      const items = data?.result?.items || [];
+
+      // Сначала ищем город
+      const cityItem = items.find(item => item.type === 'adm_div' && item.subtype === 'city');
+      if (cityItem) return cityItem.name;
+
+      // Если города нет, ищем субъект РФ (регион)
+      const regionItem = items.find(item => item.type === 'adm_div' && item.subtype === 'region');
+      if (regionItem) return regionItem.name;
+
+      return 'Неизвестно';
+    } catch (err) {
+      console.error('Ошибка при определении города/региона:', err);
+      return 'Неизвестно';
+    }
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -69,7 +91,9 @@ export async function form() {
       const other = document.querySelector('input[name="other"]:checked')?.value;
       const selectedCategoryId = parseInt(categorySelect.value);
       const selectedFilters = [...filtersContainer.querySelectorAll('input[name="filters"]:checked')].map(el => parseInt(el.value));
-      
+      const isValidAddress = await validateAddressWithCoords(address, coords.lat, coords.lng);
+      const cityName = await getCityOrRegionName(coords.lat, coords.lng);
+
 
       // --- ВАЛИДАЦИЯ ---
       if (!address) return alert('Укажите адрес');
@@ -77,13 +101,17 @@ export async function form() {
       if (isNaN(coords.lat) || isNaN(coords.lng)) return alert('Не определены координаты');
       if (!cleanliness || !convenience || !other) return alert('Поставьте оценки по всем критериям');
       if (selectedImages.length === 0) return alert('Пожалуйста, загрузите хотя бы одно фото');
+      if (!isValidAddress) {
+        return alert('Введённый адрес не соответствует координатам. Пожалуйста, выберите адрес из подсказки или укажите точку на карте.');
+      }
+
 
       const locationData = {
         address,
         description,
         directions,
         category_id: selectedCategoryId,
-        city_name: 'Москва',
+        city_name: cityName,
         latitude: coords.lat,
         longitude: coords.lng,
         filters: selectedFilters,
@@ -188,4 +216,22 @@ function renderFiltersByCategory(categoryId) {
     label.append(` ${filter.filter_name}`);
     filtersContainer.appendChild(label);
   });
+}
+
+async function validateAddressWithCoords(address, lat, lng) {
+  try {
+    const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lng}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.result?.items?.length) return false;
+
+    const foundAddress = data.result.items[0].full_name.trim().toLowerCase();
+    const inputAddress = address.trim().toLowerCase();
+
+    return foundAddress === inputAddress;
+  } catch (e) {
+    console.error('Ошибка при валидации адреса по координатам:', e);
+    return false;
+  }
 }

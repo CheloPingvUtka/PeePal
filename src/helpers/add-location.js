@@ -4,7 +4,7 @@ import { setCoordinates, coords } from './coordinates';
 
 const btnAddLocation = document.getElementById('open-form-btn');
 const formAddLocation = document.getElementById('location-modal');
-//export const coords = { lng: NaN, lat: NaN };
+let LOCATION = [37.618423, 55.751244]; // центр карты по умолчанию — Москва
 
 
 async function startForm() {
@@ -27,8 +27,6 @@ async function startForm() {
         });
     }
 
-    // Центр по умолчанию — Москва
-    let LOCATION = [37.618423, 55.751244];
 
     try {
         LOCATION = await getUserLocation();
@@ -56,7 +54,8 @@ async function startForm() {
         }
     });
 
-
+    //Режим ввода
+    
     async function reverseGeocode(lng, lat) {
         const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lng}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
 
@@ -119,12 +118,16 @@ async function startForm() {
                 const point = data?.result?.items?.[0]?.point;
                 
                 if (point && point.lon && point.lat) {
-                //selectedCoords = [parseFloat(point.lon), parseFloat(point.lat)];
-                setCoordinates(point.lat, point.lon);
-                console.log('[DEBUG] Координаты по адресу:', point.lat, point.lon);
+                    setCoordinates(point.lat, point.lon);
+                    LOCATION = [point.lon, point.lat]; // обновляем глобально
+                    map.setCenter(LOCATION); // центрируем карту
+                    map.setZoom(16); // по желанию — приближение
+                    console.log('[DEBUG] Координаты по адресу:', LOCATION);
                 } else {
-                throw new Error('Координаты не найдены');
+                    throw new Error('Координаты не найдены');
                 }
+
+
 
             } catch (e) {
                 console.error('Ошибка при получении координат по id:', e);
