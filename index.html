@@ -35,6 +35,21 @@
     </div>
   </div>
 
+  <!-- Всплывающее окно для выбора категории локации -->
+  <div id="filter-overlay" class="category-filter-overlay hidden">
+    <div id="filter-modal" class="category-filter-modal">
+      <h3>Выберите категорию</h3>
+      <select id="location-type-modal"></select>
+
+      <h4>Фильтры</h4>
+      <div id="filters-modal"></div>
+
+      <button id="close-filter-modal">Закрыть</button>
+      <button id="apply-filters">Применить</button>
+    </div>
+  </div>
+
+
 
   <!-- Всплывающее окно для добавления локации -->
   <div id="location-modal">
@@ -117,14 +132,6 @@
   <!-- Временноый скрипт вызова формы 
   <script>
 
-  </script>
-  <script>
-   const btnAddLocation = document.getElementById('open-form-btn');
-   const formAddLocation = document.getElementById('location-modal');
-   
-   btnAddLocation.addEventListener('click', () => {
-       formAddLocation.classList.toggle('active');
-   });
   </script>
   -->
 </body>

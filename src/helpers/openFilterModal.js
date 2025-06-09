@@ -1,0 +1,72 @@
+import { loadLocations } from './location';
+import { getUserCoordinates } from './map/getUserCoordinates';
+import { loadCategoriesAndFilters } from './form/categoryLoader';
+
+let isFilterModalOpen = false;
+let categoriesLoaded = false;
+
+document.getElementById('apply-filters').addEventListener('click', async () => {
+  const overlay = document.getElementById('filter-overlay');
+
+  const selectedCategory = document.getElementById('location-type-modal').value;
+  const selectedFilters = [...document.querySelectorAll('#filters-modal input[name="filters"]:checked')].map(el => el.value);
+
+  try {
+    const coords = await getUserCoordinates();
+    await loadLocations(coords, selectedCategory, selectedFilters);
+  } catch (e) {
+    console.error('Ошибка определения координат:', e);
+  }
+
+  overlay.classList.add('hidden');
+  isFilterModalOpen = false;
+});
+
+export async function openFilterModal() {
+  const overlay = document.getElementById('filter-overlay');
+  const closeBtn = document.getElementById('close-filter-modal');
+  const allMenuItems = document.querySelectorAll('#bottom-menu .menu-item');
+  const form = document.getElementById('location-modal');
+
+  if (form?.classList.contains('active')) {
+    form.classList.remove('active');
+  }
+
+  if (isFilterModalOpen) {
+    overlay.classList.add('hidden');
+    isFilterModalOpen = false;
+    return;
+  }
+
+  overlay.classList.remove('hidden');
+  isFilterModalOpen = true;
+
+  if (!categoriesLoaded) {
+    await loadCategoriesAndFilters({
+      categorySelectId: 'location-type-modal',
+      filtersContainerId: 'filters-modal'
+    });
+    categoriesLoaded = true;
+  }
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.add('hidden');
+      isFilterModalOpen = false;
+    }
+  });
+
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('hidden');
+    isFilterModalOpen = false;
+  });
+
+  allMenuItems.forEach((item, index) => {
+    if (index !== 0) {
+      item.addEventListener('click', () => {
+        overlay.classList.add('hidden');
+        isFilterModalOpen = false;
+      });
+    }
+  });
+}

@@ -1,9 +1,21 @@
-import {addLocation, setLocation, openLoacation, form} from './helpers';
+import {
+    addLocation,
+    loadLocations, 
+    showLocationPopup, 
+    form,
+    getUserCoordinates,
+    initBottomMenu
+} from './helpers';
 
 
-setLocation();
-addLocation();
+(async () => {
+  const userCoords = await getUserCoordinates();
+  await loadLocations(userCoords);
+})();
+
 form();
+initBottomMenu();
+addLocation();
 //openLoacation();
 
 //clickHandler();
