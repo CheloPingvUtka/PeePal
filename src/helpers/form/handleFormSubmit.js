@@ -13,13 +13,15 @@ export function handleFormSubmit({ form, categorySelect }) {
       const address = document.getElementById('address').value.trim();
       const rawDescription = document.getElementById('description').value.trim();
       const directions = document.getElementById('directions').value.trim();
-      const description = `${rawDescription}\n\nКак добраться до точки: ${directions}`;
+      const description = directions
+        ? `${rawDescription}\n\nКак добраться до точки: ${directions}`
+        : rawDescription;
       const cleanliness = document.querySelector('input[name="cleanliness"]:checked')?.value;
       const convenience = document.querySelector('input[name="convenience"]:checked')?.value;
       const other = document.querySelector('input[name="other"]:checked')?.value;
       const selectedCategoryId = parseInt(categorySelect.value);
       const selectedFilters = [...filtersContainer.querySelectorAll('input[name="filters"]:checked')].map(el => parseInt(el.value));
-
+      
       const isValidAddress = await validateAddressWithCoords(address, coords.lat, coords.lng);
       const cityName = await getCityOrRegionName(coords.lat, coords.lng);
 
@@ -37,7 +39,7 @@ export function handleFormSubmit({ form, categorySelect }) {
         city_name: cityName,
         latitude: coords.lat,
         longitude: coords.lng,
-        filters: selectedFilters,
+        filters_ids: selectedFilters,
         user_id: 1,
         cleanliness,
         convenience,
@@ -49,18 +51,38 @@ export function handleFormSubmit({ form, categorySelect }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(locationData),
       });
-
+      
+      
       const locationJson = await locationRes.json();
       if (!locationRes.ok) {
         console.error('Ошибка создания локации:', locationJson);
         return alert(`Ошибка: ${locationJson?.detail || JSON.stringify(locationJson)}`);
       }
-
+      
       const locationId = locationJson.id;
       const formData = new FormData();
       formData.append('location', locationId);
       for (let file of selectedImages) {
         formData.append('images', file);
+      }
+
+      const reviewRes = await fetch('http://127.0.0.1:8000/api/reviews/create/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: locationId,
+          user: 1,  // временно, или получай ID текущего пользователя
+          rating_clean: parseInt(cleanliness),
+          rating_access: parseInt(convenience),
+          rating_other: parseInt(other),
+          text: "",  // пока можно пустую строку
+        }),
+      });
+
+      const reviewJson = await reviewRes.json();
+      if (!reviewRes.ok) {
+        console.error('Ошибка отправки отзыва:', reviewJson);
+        return alert(`Ошибка отзыва: ${JSON.stringify(reviewJson)}`);
       }
 
       const photoRes = await fetch('http://127.0.0.1:8000/api/reviews/upload-multiple/', {
