@@ -14,7 +14,7 @@ export async function sendPresenceVote({ locationId, vote }) {
     body: JSON.stringify({
       location: locationId,
       vote, // 'present' или 'absent'
-      user: 1, // временно — заменить на текущего пользователя
+      user: 2, // временно — заменить на текущего пользователя
     }),
   });
 

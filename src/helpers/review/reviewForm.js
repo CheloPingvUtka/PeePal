@@ -46,7 +46,7 @@ export function setupReviewForm(wrapper, locationId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           location: locationId,
-          user: 1, // временно
+          user: 2, // временно
           rating_clean: cleanliness,
           rating_access: convenience,
           rating_other: other,
@@ -57,6 +57,11 @@ export function setupReviewForm(wrapper, locationId) {
       if (!reviewRes.ok) {
         const err = await reviewRes.json();
         console.error(err);
+
+        if (err?.non_field_errors?.[0]) {
+          return alert(err.non_field_errors[0]);
+        }
+
         return alert('Ошибка при создании отзыва');
       }
 
