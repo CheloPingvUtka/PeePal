@@ -163,3 +163,18 @@
   flex-shrink: 0;
   object-fit: cover;
 }
+
+
+.review-form-wrapper {
+  margin-top: 20px;
+}
+
+#review-form.hidden {
+  display: none;
+}
+
+.photo-preview {
+  height: 60px;
+  margin-right: 10px;
+  border-radius: 6px;
+}
