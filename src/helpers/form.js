@@ -14,7 +14,12 @@ export async function form() {
     filtersContainerId: 'filters'
   });
 
-  setupImagePreview();
+  // Передаём настройки для превью фото
+  setupImagePreview({
+    inputId: 'photo-input',
+    previewContainerId: 'photo-preview',
+    imageArray: selectedImages
+  });
 
   categorySelect.addEventListener('change', () => {
     const selectedId = parseInt(categorySelect.value);

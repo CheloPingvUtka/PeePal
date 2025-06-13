@@ -2,6 +2,8 @@ import { mapgl, map } from '../set-map';
 import { loadPhotosByLocation } from '../form/loadPhotos.js';
 import { loadPresenceStats, sendPresenceVote } from '../review/presence.js';
 import { setupReviewForm } from '../review/reviewForm.js';
+import { resetReviewPreview } from '../review/resetReviewPreview.js';
+
 
 
 let currentPopup = null;
@@ -75,8 +77,9 @@ function generatePopupHTML({ id, address, category, filters = [], photos = [], d
         <button id="toggle-review-form" class="review-toggle-btn">Оставить отзыв</button>
         <form id="review-form" class="hidden">
           <div class="photo-upload">
-            <label class="custom-file-input" for="review-photo">Выбрать фото</label>
-            <input type="file" id="review-photo" accept="image/*" multiple>
+            <label for="review-photo-input">Загрузить фото</label>
+            <label class="custom-file-input" for="review-photo-input">Выбрать файлы</label>
+            <input type="file" id="review-photo-input" accept="image/*" multiple />
             <div id="review-photo-preview" class="preview-container"></div>
           </div>
 
@@ -155,6 +158,12 @@ async function setupPopupEvents(wrapper) {
   });
 
   const destroyPopup = () => {
+    // Если в карточке есть форма отзыва — сбросить её перед удалением
+    const reviewForm = wrapper.querySelector('#review-form');
+    if (reviewForm) {
+      resetReviewPreview(wrapper);
+    }
+
     wrapper.remove();
     if (currentPopup === wrapper) currentPopup = null;
 
@@ -163,6 +172,7 @@ async function setupPopupEvents(wrapper) {
       el.removeEventListener('click', destroyPopup)
     );
   };
+
 
   html.querySelectorAll('.toggle-description').forEach(button => {
     button.addEventListener('click', () => {

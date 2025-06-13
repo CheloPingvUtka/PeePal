@@ -1,12 +1,15 @@
 export const selectedImages = [];
+export const selectedReviewImages = [];
 
-export function setupImagePreview() {
-  const input = document.getElementById('photo-input');
+export function setupImagePreview({ inputId, previewContainerId, imageArray }) {
+  const input = document.getElementById(inputId);
+  const previewContainer = document.getElementById(previewContainerId);
+
   input.addEventListener('change', (e) => {
     const files = Array.from(e.target.files);
 
     for (const file of files) {
-      selectedImages.push(file);
+      imageArray.push(file);
       const reader = new FileReader();
 
       reader.onload = () => {
@@ -22,13 +25,13 @@ export function setupImagePreview() {
         removeBtn.innerText = '×';
 
         removeBtn.onclick = () => {
-          selectedImages.splice(selectedImages.indexOf(file), 1);
+          imageArray.splice(imageArray.indexOf(file), 1);
           wrapper.remove();
         };
 
         wrapper.appendChild(img);
         wrapper.appendChild(removeBtn);
-        document.getElementById('photo-preview').appendChild(wrapper);
+        previewContainer.appendChild(wrapper);
       };
 
       reader.readAsDataURL(file);
