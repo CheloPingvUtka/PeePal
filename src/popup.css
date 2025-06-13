@@ -178,3 +178,83 @@
   margin-right: 10px;
   border-radius: 6px;
 }
+
+.rating-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content.enhanced-reviews {
+  background-color: #fff;
+  border-radius: 10px;
+
+  width: 80vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.modal-content .close-modal.top-right {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-content .user-reviews {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Центрирует содержимое по горизонтали */
+  gap: 1.5rem;
+}
+
+
+.modal-content .user-reviews li,
+.rating-summary-breakdown ul {
+  list-style: none;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  background-color: #efefef;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-bottom: none;
+  text-align: center;
+}
+
+
+.modal-content .user-reviews li,
+.rating-summary-breakdown li {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.modal-content .user-reviews span,
+.modal-content .user-reviews p,
+.rating-summary-breakdown li {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+
+.modal-content .user-reviews a {
+  color: #116a48;
+  font-size: 1.3rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal-content .user-reviews a:hover {
+  text-decoration: underline;
+}

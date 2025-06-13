@@ -3,6 +3,7 @@ import { loadPhotosByLocation } from '../form/loadPhotos.js';
 import { loadPresenceStats, sendPresenceVote } from '../review/presence.js';
 import { setupReviewForm } from '../review/reviewForm.js';
 import { resetReviewPreview } from '../review/resetReviewPreview.js';
+import { loadReviewsByLocation } from '../review/loadReviews.js';
 
 
 
@@ -60,18 +61,22 @@ function generatePopupHTML({ id, address, category, filters = [], photos = [], d
         </div>
 
         <div class="rating-modal hidden">
-          <div class="modal-content">
+          <div class="modal-content enhanced-reviews">
+            <button class="close-modal top-right">×</button>
+            <h3>Средняя оценка</h3>
+            <div class="rating-summary-breakdown">
+              <ul>
+                <li>Чистота: ⭐ ${rating.clean || '–'}</li>
+                <li>Удобство: ⭐ ${rating.comfort || '–'}</li>
+                <li>Другое: ⭐ ${rating.other || '–'}</li>
+              </ul>
+            </div>
             <h3>Отзывы пользователей</h3>
-            <p>Функция в разработке</p>
-            <ul>
-              <li>Чистота: ⭐ ${rating.clean || '–'}</li>
-              <li>Удобство: ⭐ ${rating.comfort || '–'}</li>
-              <li>Другое: ⭐ ${rating.other || '–'}</li>
-            </ul>
-            <button class="close-modal">Закрыть</button>
+            <div class="user-reviews">
+              <!-- Отзывы загружаются сюда динамически -->
+            </div>
           </div>
         </div>
-      </div>
     
       <div class="review-form-wrapper">
         <button id="toggle-review-form" class="review-toggle-btn">Оставить отзыв</button>
@@ -134,6 +139,25 @@ async function setupPopupEvents(wrapper) {
 
   const locationId = parseInt(wrapper.querySelector('.location-title')?.dataset?.locationId);
   const stats = await loadPresenceStats(locationId);
+
+  const reviews = await loadReviewsByLocation(locationId);
+  const modalList = wrapper.querySelector('.rating-modal ul');
+  const modalContent = wrapper.querySelector('.rating-modal .modal-content');
+  const reviewsContainer = wrapper.querySelector('.user-reviews');
+  
+  // добавим каждый отзыв
+  reviews.forEach(review => {
+    const item = document.createElement('li');
+    item.innerHTML = `
+      <strong><a href="/user/${review.user_id || ''}">${review.user_name || 'Пользователь'}</a></strong><br>
+      ${review.text ? `<p>${review.text}</p>` : ''}
+      <span>Чистота: ⭐ ${review.rating_clean}</span><br>
+      <span>Удобство: ⭐ ${review.rating_access}</span><br>
+      <span>Другое: ⭐ ${review.rating_other}</span><br>
+    `;
+    reviewsContainer.appendChild(item);
+  });
+
   setupReviewForm(wrapper, locationId);
 
   minusBtn.querySelector('.count').textContent = stats.absent;
