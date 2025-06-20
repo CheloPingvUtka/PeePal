@@ -1,5 +1,8 @@
 import { setupImagePreview, selectedReviewImages } from '../form/imagePreview.js';
 import { resetReviewPreview } from './resetReviewPreview.js';
+import { requireAuth } from '../auth/requireAuth.js';
+import { getCurrentUserId } from '../auth/user';
+
 
 export function setupReviewForm(wrapper, locationId) {
   const toggleBtn = wrapper.querySelector('#toggle-review-form');
@@ -14,13 +17,16 @@ export function setupReviewForm(wrapper, locationId) {
 
   // Обработка показа/скрытия формы
   toggleBtn.addEventListener('click', () => {
-    const isHidden = form.classList.toggle('hidden');
-    toggleBtn.textContent = isHidden ? 'Оставить отзыв' : 'Скрыть форму';
+    requireAuth(() => {
+      const isHidden = form.classList.toggle('hidden');
+      toggleBtn.textContent = isHidden ? 'Оставить отзыв' : 'Скрыть форму';
 
-    if (isHidden) {
-      resetReviewPreview(wrapper);
-    }
+      if (isHidden) {
+        resetReviewPreview(wrapper);
+      }
+    }, 'review');
   });
+
 
   // Обработка отправки формы
   form.addEventListener('submit', async (e) => {
@@ -30,6 +36,12 @@ export function setupReviewForm(wrapper, locationId) {
     const cleanliness = form.querySelector('input[name="review-clean"]:checked')?.value;
     const convenience = form.querySelector('input[name="review-conv"]:checked')?.value;
     const other = form.querySelector('input[name="review-other"]:checked')?.value;
+    const userId = await getCurrentUserId();
+
+    if (!userId) {
+      console.error('Пользователь не авторизован');
+      return false;
+    }
 
     if (!cleanliness || !convenience || !other) {
       return alert('Оцените по всем критериям');
@@ -46,7 +58,7 @@ export function setupReviewForm(wrapper, locationId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           location: locationId,
-          user: 2, // временно
+          user: userId, // временно
           rating_clean: cleanliness,
           rating_access: convenience,
           rating_other: other,

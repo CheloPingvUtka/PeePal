@@ -1,3 +1,6 @@
+import { getCurrentUserId } from '../auth/user';
+
+
 export async function loadPresenceStats(locationId) {
   const res = await fetch(`http://127.0.0.1:8000/api/reviews/presence/stats/${locationId}`);
   if (!res.ok) {
@@ -8,13 +11,20 @@ export async function loadPresenceStats(locationId) {
 }
 
 export async function sendPresenceVote({ locationId, vote }) {
+  const userId = await getCurrentUserId();
+
+  if (!userId) {
+    console.error('Пользователь не авторизован');
+    return false;
+  }
+
   const res = await fetch('http://127.0.0.1:8000/api/reviews/presence/vote/', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       location: locationId,
       vote, // 'present' или 'absent'
-      user: 1, // временно — заменить на текущего пользователя
+      user: userId, // временно — заменить на текущего пользователя
     }),
   });
 

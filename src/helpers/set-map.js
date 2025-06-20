@@ -38,7 +38,7 @@ async function start() {
     map = new mapgl.Map('container', {
         center: LOCATION,
         zoom: 13,
-        key: 'e417529f-6cc7-4e40-b743-ba94b52744f5',
+        key: 'b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94',
     });
     
 

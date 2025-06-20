@@ -2,6 +2,8 @@ import { coords } from '../coordinates';
 import { selectedImages } from './imagePreview';
 import { allFilters, renderFiltersByCategory } from './filterUtils';
 import { validateAddressWithCoords, getCityOrRegionName } from './addressValidation';
+import { getCurrentUserId } from '../auth/user';
+
 
 export function handleFormSubmit({ form, categorySelect }) {
   form.addEventListener('submit', async (e) => {
@@ -10,6 +12,7 @@ export function handleFormSubmit({ form, categorySelect }) {
     const filtersContainer = document.getElementById('filters');
 
     try {
+      const userId = await getCurrentUserId();
       const address = document.getElementById('address').value.trim();
       const rawDescription = document.getElementById('description').value.trim();
       const directions = document.getElementById('directions').value.trim();
@@ -31,6 +34,7 @@ export function handleFormSubmit({ form, categorySelect }) {
       if (!cleanliness || !convenience || !other) return alert('Поставьте оценки по всем критериям');
       if (selectedImages.length === 0) return alert('Пожалуйста, загрузите хотя бы одно фото');
       if (!isValidAddress) return alert('Адрес не соответствует координатам.');
+      if (!userId) return alert('Пожалуйста, авторизуйтесь перед добавлением локации');
 
       const locationData = {
         address,
@@ -40,7 +44,7 @@ export function handleFormSubmit({ form, categorySelect }) {
         latitude: coords.lat,
         longitude: coords.lng,
         filters_ids: selectedFilters,
-        user_id: 1,
+        user_id: userId,
         cleanliness,
         convenience,
         other,
@@ -71,11 +75,11 @@ export function handleFormSubmit({ form, categorySelect }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           location: locationId,
-          user: 1,  // временно, или получай ID текущего пользователя
+          user: userId,  // временно, или получай ID текущего пользователя
           rating_clean: parseInt(cleanliness),
           rating_access: parseInt(convenience),
           rating_other: parseInt(other),
-          text: "",  // пока можно пустую строку
+          text: description,
         }),
       });
 

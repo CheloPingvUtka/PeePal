@@ -1,6 +1,6 @@
 export async function validateAddressWithCoords(address, lat, lon) {
   try {
-    const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lon}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
+    const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lon}&key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94&locale=ru_RU`;
     const res = await fetch(url);
     const data = await res.json();
 
@@ -16,7 +16,7 @@ export async function validateAddressWithCoords(address, lat, lon) {
 }
 
 export async function getCityOrRegionName(lat, lon) {
-  const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lon}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
+  const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lon}&key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94&locale=ru_RU`;
 
   try {
     const res = await fetch(url);

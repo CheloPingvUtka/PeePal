@@ -141,8 +141,6 @@ async function setupPopupEvents(wrapper) {
   const stats = await loadPresenceStats(locationId);
 
   const reviews = await loadReviewsByLocation(locationId);
-  const modalList = wrapper.querySelector('.rating-modal ul');
-  const modalContent = wrapper.querySelector('.rating-modal .modal-content');
   const reviewsContainer = wrapper.querySelector('.user-reviews');
   
   // добавим каждый отзыв
@@ -196,7 +194,6 @@ async function setupPopupEvents(wrapper) {
       el.removeEventListener('click', destroyPopup)
     );
   };
-
 
   html.querySelectorAll('.toggle-description').forEach(button => {
     button.addEventListener('click', () => {

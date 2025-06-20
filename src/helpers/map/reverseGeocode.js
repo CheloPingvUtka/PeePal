@@ -1,5 +1,5 @@
 export async function reverseGeocode(lng, lat) {
-  const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lng}&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`;
+  const url = `https://catalog.api.2gis.com/3.0/items/geocode?lat=${lat}&lon=${lng}&key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94&locale=ru_RU`;
 
   const res = await fetch(url);
   const data = await res.json();

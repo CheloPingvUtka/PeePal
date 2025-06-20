@@ -19,7 +19,7 @@ export function setupAddressSuggestions(map) {
 
   async function fetchSuggestions(query) {
     try {
-      const res = await fetch(`https://catalog.api.2gis.com/3.0/suggests?q=${encodeURIComponent(query)}&type=building&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`);
+      const res = await fetch(`https://catalog.api.2gis.com/3.0/suggests?q=${encodeURIComponent(query)}&type=building&key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94&locale=ru_RU`);
       const data = await res.json();
       suggestionsContainer.innerHTML = '';
 
@@ -42,7 +42,7 @@ export function setupAddressSuggestions(map) {
     suggestionsContainer.innerHTML = '';
 
     try {
-      const res = await fetch(`https://catalog.api.2gis.com/3.0/items/byid?id=${item.id}&fields=items.point&key=e417529f-6cc7-4e40-b743-ba94b52744f5&locale=ru_RU`);
+      const res = await fetch(`https://catalog.api.2gis.com/3.0/items/byid?id=${item.id}&fields=items.point&key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94&locale=ru_RU`);
       const data = await res.json();
       const point = data?.result?.items?.[0]?.point;
 
