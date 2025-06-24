@@ -27,11 +27,11 @@
     <div class="stats">
       <div class="stat-box">
         <div class="stat-title">Мои отзывы</div>
-        <div class="stat-value">12 отзывов</div>
+        <div class="stat-value reviews">0</div>
       </div>
       <div class="stat-box">
-        <div class="stat-title">В модерации</div>
-        <div class="stat-value">2 места</div>
+        <div class="stat-title">Мои локации</div>
+        <div class="stat-value pending">0</div>
       </div>
     </div>
 
@@ -52,5 +52,13 @@
       <a href="support.html" class="icon">💬</a>
     </div>
   </div>
+
+  <script type="module">
+    import { populateUserInfo } from '../src/helpers/auth/populateUserInfo.js';
+    import { loadUserStats } from '../src/helpers/auth/userStats.js';
+    populateUserInfo();
+    loadUserStats();
+  </script>
+
 </body>
 </html>
