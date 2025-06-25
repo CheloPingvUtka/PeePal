@@ -108,14 +108,8 @@ body {
   font-size: 0.85em;
 }
 
-.stars {
+.stars, .location-stars {
   font-size: 16px;
-  color: gold;
-  margin: 4px 0;
-}
-
-.location-stars {
-  font-size: 1.1em;
   color: gold;
   margin: 4px 0;
 }

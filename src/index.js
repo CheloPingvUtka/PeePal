@@ -4,7 +4,8 @@ import {
     showLocationPopup, 
     form,
     getUserCoordinates,
-    initBottomMenu
+    initBottomMenu,
+    handleLocationHash,
 } from './helpers';
 
 
@@ -13,10 +14,9 @@ import {
   await loadLocations(userCoords);
 })();
 
+
+await handleLocationHash();
 form();
 initBottomMenu();
 addLocation();
-//openLoacation();
 
-//clickHandler();
-//start();

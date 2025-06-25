@@ -4,3 +4,4 @@ export {getUserCoordinates} from './map/getUserCoordinates.js'
 export {addLocation} from './add-location.js';
 export {form} from './form.js';
 export { initBottomMenu } from './initBottomMenu.js';
+export { handleLocationHash } from './user/handleLocationHash.js';
