@@ -10,10 +10,11 @@ document.getElementById('apply-filters').addEventListener('click', async () => {
 
   const selectedCategory = document.getElementById('location-type-modal').value;
   const selectedFilters = [...document.querySelectorAll('#filters-modal input[name="filters"]:checked')].map(el => el.value);
+  const radius = parseInt(document.getElementById('radius-slider').value); // <---
 
   try {
     const coords = await getUserCoordinates();
-    await loadLocations(coords, selectedCategory, selectedFilters);
+    await loadLocations(coords, selectedCategory, selectedFilters, radius); // передаём
   } catch (e) {
     console.error('Ошибка определения координат:', e);
   }
@@ -21,6 +22,7 @@ document.getElementById('apply-filters').addEventListener('click', async () => {
   overlay.classList.add('hidden');
   isFilterModalOpen = false;
 });
+
 
 export async function openFilterModal() {
   const overlay = document.getElementById('filter-overlay');
@@ -47,6 +49,16 @@ export async function openFilterModal() {
       filtersContainerId: 'filters-modal'
     });
     categoriesLoaded = true;
+  }
+
+  // 👉 Добавляем обработчик слайдера здесь
+  const slider = document.getElementById('radius-slider');
+  const valueDisplay = document.getElementById('radius-value');
+
+  if (slider && valueDisplay) {
+    slider.addEventListener('input', (e) => {
+      valueDisplay.textContent = `${e.target.value} км`;
+    });
   }
 
   overlay.addEventListener('click', (e) => {

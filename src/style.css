@@ -281,3 +281,18 @@ button svg {
 #close-filter-modal {
   background-color: #ff1a1a;
 }
+
+
+.radius-slider-wrapper {
+  margin: 10px 0;
+}
+
+.radius-slider-wrapper input[type="range"] {
+  width: 100%;
+}
+
+#radius-value {
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+}

@@ -1,14 +1,9 @@
 import { showLocationPopup } from '../map/popupManager';
 
 export async function handleLocationHash() {
-    console.log('[handleLocationHash] модуль подключен');
-    console.log('[handleLocationHash] hash =', window.location.hash);
     const hash = window.location.hash;
 
-    if (!hash.startsWith('#loc-')) {
-        console.log('[handleLocationHash] hash не начинается с #loc-');
-        return;
-    }
+    if (!hash.startsWith('#loc-')) return;
 
     const locationId = parseInt(hash.replace('#loc-', ''));
 

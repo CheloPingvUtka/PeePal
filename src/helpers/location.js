@@ -1,6 +1,6 @@
 import { drawMarkers } from './map/markerManager';
 
-export async function loadLocations(userCoords, category = null, filters = []) {
+export async function loadLocations(userCoords, category = null, filters = [], radius = 5) {
   if (!userCoords) {
     console.warn('[loadLocations] userCoords is undefined or invalid:', userCoords);
     return;
@@ -12,7 +12,7 @@ export async function loadLocations(userCoords, category = null, filters = []) {
 
   const res = await fetch(url);
   const data = await res.json();
-  const nearby = filterLocationsByDistance(userCoords, data, 5);
+  const nearby = filterLocationsByDistance(userCoords, data, radius); // <-- radius
   drawMarkers(nearby);
 }
 
