@@ -10,6 +10,12 @@ export function handleFormSubmit({ form, categorySelect }) {
     e.preventDefault();
 
     const filtersContainer = document.getElementById('filters');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    if (submitBtn.disabled) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка...';
 
     try {
       const userId = await getCurrentUserId();
@@ -110,6 +116,9 @@ export function handleFormSubmit({ form, categorySelect }) {
     } catch (error) {
       console.error('Непредвиденная ошибка:', error);
       alert('Что-то пошло не так. Проверь консоль разработчика.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Отправить на модерацию';
     }
   });
 }

@@ -37,19 +37,26 @@ export function setupReviewForm(wrapper, locationId) {
     const convenience = form.querySelector('input[name="review-conv"]:checked')?.value;
     const other = form.querySelector('input[name="review-other"]:checked')?.value;
     const userId = await getCurrentUserId();
-
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
+    
     if (!userId) {
       console.error('Пользователь не авторизован');
       return false;
     }
-
+    
     if (!cleanliness || !convenience || !other) {
       return alert('Оцените по всем критериям');
     }
-
+    
     if (selectedReviewImages.length === 0) {
       return alert('Загрузите хотя бы одно фото');
     }
+    
+    if (submitBtn.disabled) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Отправка...';
 
     try {
       // Отправка отзыва
@@ -58,7 +65,7 @@ export function setupReviewForm(wrapper, locationId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           location: locationId,
-          user: userId, // временно
+          user: userId,
           rating_clean: cleanliness,
           rating_access: convenience,
           rating_other: other,
@@ -107,6 +114,9 @@ export function setupReviewForm(wrapper, locationId) {
     } catch (error) {
       console.error('Ошибка при отправке формы отзыва:', error);
       alert('Что-то пошло не так. Проверьте консоль разработчика.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Отправить отзыв';
     }
   });
 }
