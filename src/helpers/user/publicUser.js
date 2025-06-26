@@ -18,11 +18,22 @@ export async function loadPublicUserInfo(userId) {
     document.querySelector('#username').textContent = user.username || 'Без имени';
     document.querySelector('#phone').textContent = user.phone || user.email || '–';
 
-    document.querySelector('#reviews-count').textContent = `${user.reviews_count || 0} отзывов`;
-    document.querySelector('#locations-count').textContent = `${user.locations_count || 0} мест`;
+    // Создаём статистику с кликабельными ссылками
+    const statsContainer = document.querySelector('.stats');
+    statsContainer.innerHTML = `
+      <a href="public-reviews.html?id=${userId}" class="stat-box">
+        <div class="stat-title">Отзывы</div>
+        <div class="stat-value">${user.reviews_count || 0} отзывов</div>
+      </a>
+      <a href="public-locations.html?id=${userId}" class="stat-box">
+        <div class="stat-title">Локации</div>
+        <div class="stat-value">${user.locations_count || 0} мест</div>
+      </a>
+    `;
 
   } catch (error) {
     console.error('Ошибка загрузки профиля пользователя:', error);
     document.querySelector('#username').textContent = 'Ошибка загрузки';
   }
 }
+
