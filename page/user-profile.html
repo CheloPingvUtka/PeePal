@@ -1,0 +1,39 @@
+<!-- user-profile.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../src/lk.css" />
+  <title>Профиль пользователя | PeePal</title>
+</head>
+<body>
+  <div class="screen">
+    <div class="lk-header">
+      <a href="../index.html">←</a>
+      Профиль пользователя
+    </div>
+
+    <div class="user-block">
+      <div class="user-link">
+        <span id="username">Загрузка...</span>
+      </div>
+      <div class="user-phone" id="phone">—</div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="stat-title">Отзывы</div>
+        <div class="stat-value" id="reviews-count">–</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-title">Локации</div>
+        <div class="stat-value" id="locations-count">–</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="../src/helpers/user/publicUser.js"></script>
+
+</body>
+</html>

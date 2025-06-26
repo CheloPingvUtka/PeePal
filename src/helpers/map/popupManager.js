@@ -147,7 +147,7 @@ async function setupPopupEvents(wrapper) {
   reviews.forEach(review => {
     const item = document.createElement('li');
     item.innerHTML = `
-      <strong><a href="/user/${review.user_id || ''}">${review.user_name || 'Пользователь'}</a></strong><br>
+      <strong><a href="page/user-profile.html?id=${review.user}">${review.user_name}</a></strong><br>
       ${review.text ? `<p>${review.text}</p>` : ''}
       <span>Чистота: ⭐ ${review.rating_clean}</span><br>
       <span>Удобство: ⭐ ${review.rating_access}</span><br>
