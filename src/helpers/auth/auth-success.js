@@ -10,7 +10,7 @@ function runNextAction() {
         document.getElementById('open-form-btn')?.click();
         break;
       case 'profile':
-        window.location.href = '/page/lk.html'; // или открытие модального окна
+        window.location.href = '/src/page/lk.html'; // или открытие модального окна
         break;
       case 'review':
         document.getElementById('review-btn')?.click();

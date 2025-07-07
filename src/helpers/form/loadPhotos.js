@@ -1,5 +1,5 @@
 export async function loadPhotosByLocation(locationId) {
-  const response = await fetch(`http://localhost:8000/api/reviews/photos/?location=${locationId}`);
+  const response = await fetch(`https://peepal.ru/api/reviews/photos/?location=${locationId}`);
   if (!response.ok) {
     console.error('Ошибка при загрузке фото:', response.status);
     return [];

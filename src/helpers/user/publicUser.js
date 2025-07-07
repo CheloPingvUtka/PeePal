@@ -10,7 +10,7 @@ if (userId) {
 
 export async function loadPublicUserInfo(userId) {
   try {
-    const res = await fetch(`http://localhost:8000/auth/public/${userId}/`);
+    const res = await fetch(`https://peepal.ru/auth/public/${userId}/`);
     if (!res.ok) throw new Error('Ошибка запроса');
 
     const user = await res.json();

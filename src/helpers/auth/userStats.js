@@ -1,6 +1,6 @@
 export async function loadUserStats() {
   try {
-    const res = await fetch('http://localhost:8000/api/user/stats/', {
+    const res = await fetch('https://peepal.ru/api/user/stats/', {
       credentials: 'include',
     });
     if (!res.ok) throw new Error('Ошибка запроса');

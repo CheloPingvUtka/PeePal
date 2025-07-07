@@ -1,6 +1,6 @@
 export async function requireAuth(callback) {
   try {
-    const res = await fetch('http://localhost:8000/auth/me/', {
+    const res = await fetch('https://peepal.ru/auth/me/', {
       credentials: 'include',
     });
 
@@ -10,11 +10,11 @@ export async function requireAuth(callback) {
       callback?.();
     } else {
       console.log('❌ Не авторизован. Переход на /auth/');
-      window.location.href = `http://localhost:8000/auth/login/?next=${getNextAction()}`;
+      window.location.href = `https://peepal.ru/auth/login/?next=${getNextAction()}`;
     }
   } catch (e) {
     console.error('Ошибка при проверке авторизации', e);
-    window.location.href = `http://localhost:8000/auth/login/?next=${getNextAction()}`;
+    window.location.href = `https://peepal.ru/auth/login/?next=${getNextAction()}`;
   }
 }
 

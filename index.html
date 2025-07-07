@@ -47,9 +47,11 @@
         <input type="range" id="radius-slider" min="1" max="200" step="1" value="5">
         <span id="radius-value">5 км</span>
       </div>
-      
-      <button id="close-filter-modal">Закрыть</button>
-      <button id="apply-filters">Применить</button>
+      <button id="select-all">Показать все локации</button>
+      <div class="aply-close">
+        <button id="close-filter-modal">Закрыть</button>
+        <button id="apply-filters">Применить</button>
+      </div>
     </div>
   </div>
 
@@ -62,11 +64,11 @@
       <div class="photo-upload">
         <label for="photo-input">Загрузить фото</label>
         <label class="custom-file-input" for="photo-input">Выбрать файлы</label>
-        <input type="file" id="photo-input" accept="image/*" multiple />
+        <input type="file" id="photo-input" accept="image/*" multiple/>
         <div id="photo-preview" class="preview-container"></div>
       </div>
+
       <div>
-        
         
         <div class="location-input">
           <label for="address">Адрес</label>
@@ -117,7 +119,7 @@
           </div>
         </div>
         <div>
-          <span>Другое</span>
+          <span>Доступность</span>
           <div class="stars">
             <input type="radio" id="other-5" name="other" value="5"><label for="other-5">★</label>
             <input type="radio" id="other-4" name="other" value="4"><label for="other-4">★</label>

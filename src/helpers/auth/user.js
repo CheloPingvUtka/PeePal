@@ -1,6 +1,6 @@
 export async function getCurrentUserId() {
   try {
-    const res = await fetch('http://localhost:8000/auth/me/', {
+    const res = await fetch('https://peepal.ru/auth/me/', {
       credentials: 'include',
     });
 
@@ -16,7 +16,7 @@ export async function getCurrentUserId() {
 
 export async function getCurrentUser() {
   try {
-    const res = await fetch('http://localhost:8000/auth/me/', {
+    const res = await fetch('https://peepal.ru/auth/me/', {
       credentials: 'include',
     });
 

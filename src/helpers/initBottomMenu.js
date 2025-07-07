@@ -13,7 +13,7 @@ export function initBottomMenu() {
     profileBtn.addEventListener('click', () => {
 
       requireAuth(() => {
-        window.location.href = './page/lk.html';
+        window.location.href = './src/page/lk.html';
       }, 'profile');
     });
   } else {

@@ -8,13 +8,13 @@ export async function handleLocationHash() {
     const locationId = parseInt(hash.replace('#loc-', ''));
 
     try {
-        const res = await fetch(`http://localhost:8000/api/locations/locations/${locationId}/`);
+        const res = await fetch(`https://peepal.ru/api/locations/locations/${locationId}/`);
         if (!res.ok) throw new Error('Локация не найдена');
 
         const locationData = await res.json();
 
         // Загружаем оценки
-        const reviewsRes = await fetch(`http://localhost:8000/api/reviews/reviews/by-location/${locationId}`);
+        const reviewsRes = await fetch(`https://peepal.ru/api/reviews/reviews/by-location/${locationId}`);
         const reviews = await reviewsRes.json();
 
         if (reviews.length) {

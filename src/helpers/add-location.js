@@ -21,8 +21,10 @@ export function addLocation() {
           const pos = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(
               (p) => resolve([p.coords.longitude, p.coords.latitude]),
-              () => reject()
-            );
+              () => reject(), {
+              enableHighAccuracy: false,
+              maximumAge: 60000,
+            });
           });
           location = pos;
         } catch {

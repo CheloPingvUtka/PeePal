@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../support.css">
+  <title>Чат поддержки | PeePal</title>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <a href="lk.html">←</a>
+      Чат поддержки
+    </div>
+
+    <div class="chat-body" id="chat-body">
+    </div>
+
+    <div class="chat-footer">
+      <div class="chat-attach" onclick="alert('Пока не реализовано')">📎</div>
+      <input class="chat-input" id="chat-input" type="text" placeholder="Напиши сообщение..." />
+      <button class="chat-send" id="send-button">➜</button>
+    </div>
+  </div>
+
+    <script>
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+    const sendButton = document.getElementById('send-button');
+
+    function formatTime(date = new Date()) {
+        return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatDate(date = new Date()) {
+        return date.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+        });
+    }
+
+    function createInitialMessage() {
+        const now = new Date();
+
+        const dateEl = document.createElement('div');
+        dateEl.className = 'chat-date';
+        dateEl.textContent = formatDate(now);
+
+        const messageEl = document.createElement('div');
+        messageEl.className = 'chat-message from-support';
+        messageEl.innerHTML = `
+        Добро пожаловать в поддержку PeePal
+        <div class="chat-time">${formatTime(now)}</div>
+        `;
+
+        chatBody.appendChild(dateEl);
+        chatBody.appendChild(messageEl);
+    }
+
+    function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        const message = document.createElement('div');
+        message.className = 'chat-message from-user';
+        message.innerHTML = `
+        ${text}
+        <div class="chat-time">${formatTime()}</div>
+        `;
+        chatBody.appendChild(message);
+
+        chatInput.value = '';
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    // Инициализация
+    window.addEventListener('DOMContentLoaded', () => {
+        createInitialMessage();
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    </script>
+</body>
+</html>

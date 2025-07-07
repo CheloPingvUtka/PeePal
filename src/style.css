@@ -256,7 +256,7 @@ button svg {
 
 .category-filter-modal {
   position: fixed;
-  top: 20%;
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
   background: white;
@@ -269,7 +269,8 @@ button svg {
 }
 
 #apply-filters,
-#close-filter-modal {
+#close-filter-modal,
+#select-all {
   margin-top: 3vw;
   background-color: #00796B;
   border: none;
@@ -282,6 +283,9 @@ button svg {
   background-color: #ff1a1a;
 }
 
+#select-all {
+  background-color: #1f78d6;
+}
 
 .radius-slider-wrapper {
   margin: 10px 0;

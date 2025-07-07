@@ -1,14 +1,30 @@
 import { getCurrentUserId } from '../auth/user';
+import { getCookie } from '../getCookie.js';
 
 
 export async function loadPresenceStats(locationId) {
-  const res = await fetch(`http://127.0.0.1:8000/api/reviews/presence/stats/${locationId}`);
-  if (!res.ok) {
-    console.error('Ошибка загрузки статистики:', await res.text());
+  try {
+    const res = await fetch(`https://peepal.ru/api/reviews/presence/stats/${locationId}/`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: { 
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+    });
+
+    const contentType = res.headers.get('Content-Type');
+    if (!res.ok || !contentType?.includes('application/json')) {
+      console.error('Ошибка загрузки статистики:', res.status, await res.text());
+      return { present: 0, absent: 0, choice: null };
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error('Ошибка при получении статистики:', error);
     return { present: 0, absent: 0, choice: null };
   }
-  return res.json();
 }
+
 
 export async function sendPresenceVote({ locationId, vote }) {
   const userId = await getCurrentUserId();
@@ -18,9 +34,13 @@ export async function sendPresenceVote({ locationId, vote }) {
     return false;
   }
 
-  const res = await fetch('http://127.0.0.1:8000/api/reviews/presence/vote/', {
+  const res = await fetch('https://peepal.ru/api/reviews/presence/vote/', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken'),
+    },
     body: JSON.stringify({
       location: locationId,
       vote, // 'present' или 'absent'

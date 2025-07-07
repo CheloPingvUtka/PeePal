@@ -4,10 +4,11 @@ import { loadPresenceStats, sendPresenceVote } from '../review/presence.js';
 import { setupReviewForm } from '../review/reviewForm.js';
 import { resetReviewPreview } from '../review/resetReviewPreview.js';
 import { loadReviewsByLocation } from '../review/loadReviews.js';
-
+import { getUserCoordinates } from './getUserCoordinates.js';
 
 
 let currentPopup = null;
+const routeLines = [];
 
 export async function showLocationPopup(_, locationData) {
   // Удаляем предыдущий попап
@@ -26,7 +27,7 @@ export async function showLocationPopup(_, locationData) {
 
   currentPopup = wrapper; // сохраняем текущий попап
 
-  setupPopupEvents(wrapper);
+  setupPopupEvents(wrapper, locationData);
 }
 
 
@@ -68,7 +69,7 @@ function generatePopupHTML({ id, address, category, filters = [], photos = [], d
               <ul>
                 <li>Чистота: ⭐ ${rating.clean || '–'}</li>
                 <li>Удобство: ⭐ ${rating.comfort || '–'}</li>
-                <li>Другое: ⭐ ${rating.other || '–'}</li>
+                <li>Доступность: ⭐ ${rating.other || '–'}</li>
               </ul>
             </div>
             <h3>Отзывы пользователей</h3>
@@ -101,7 +102,7 @@ function generatePopupHTML({ id, address, category, filters = [], photos = [], d
               <div class="stars">${generateStars('review-conv')}</div>
             </div>
             <div>
-              <span>Другое</span>
+              <span>Доступность</span>
               <div class="stars">${generateStars('review-other')}</div>
             </div>
           </div>
@@ -116,7 +117,8 @@ function generatePopupHTML({ id, address, category, filters = [], photos = [], d
       </div>
 
       <div class="location-actions">
-        <button class="report-button">Отправить жалобу</button>
+        <button class="route-button">Построить маршрут</button>
+        <button class="report-button">Закрыть окно</button>
       </div>
     </div>
   `;
@@ -131,30 +133,127 @@ function generateStars(name) {
 }
 
 
-async function setupPopupEvents(wrapper) {
+async function setupPopupEvents(wrapper, locationData) {
   const html = wrapper;
 
   const minusBtn = html.querySelector('#minus');
   const plusBtn = html.querySelector('#plus');
 
   const locationId = parseInt(wrapper.querySelector('.location-title')?.dataset?.locationId);
-  const stats = await loadPresenceStats(locationId);
+  let stats;
+  try {
+    stats = await loadPresenceStats(locationId);
+  } catch (e) {
+    console.error('Ошибка при загрузке presence stats', e);
+    return;
+  }
 
-  const reviews = await loadReviewsByLocation(locationId);
+  let reviews;
+  try {
+    reviews = await loadReviewsByLocation(locationId);
+  } catch (e) {
+    console.error('Ошибка при загрузке loadReviewsByLocation', e);
+    return;
+  }
+
   const reviewsContainer = wrapper.querySelector('.user-reviews');
-  
-  // добавим каждый отзыв
-  reviews.forEach(review => {
-    const item = document.createElement('li');
-    item.innerHTML = `
-      <strong><a href="page/user-profile.html?id=${review.user}">${review.user_name}</a></strong><br>
-      ${review.text ? `<p>${review.text}</p>` : ''}
-      <span>Чистота: ⭐ ${review.rating_clean}</span><br>
-      <span>Удобство: ⭐ ${review.rating_access}</span><br>
-      <span>Другое: ⭐ ${review.rating_other}</span><br>
-    `;
-    reviewsContainer.appendChild(item);
+
+  html.querySelector('.route-button')?.addEventListener('click', async () => {
+    const userCoords = await getUserCoordinates(); // [lat, lon]
+    const targetCoords = [parseFloat(locationData.latitude), parseFloat(locationData.longitude)];
+    
+    const response = await fetch('https://routing.api.2gis.com/routing/7.0.0/global?key=b51c5279-1c87-4a9c-9fbe-b39d0b3fdc94', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        points: [
+          { type: 'stop', lon: userCoords[1], lat: userCoords[0] },
+          { type: 'stop', lon: targetCoords[1], lat: targetCoords[0] }
+        ],
+        transport: 'walking',
+        route_mode: 'fastest',
+        traffic_mode: 'jam'
+      }),
+    });
+    
+    const data = await response.json();
+    if (!data.result || !data.result[0]) {
+      alert('Маршрут не найден');
+      return;
+    }
+    
+    
+    function parseLineString(lineString) {
+      return lineString
+      .replace('LINESTRING(', '')
+      .replace(')', '')
+      .split(', ')
+      .map(coord => {
+        const [lon, lat] = coord.split(' ').map(Number);
+        return [lon, lat];
+      });
+    }
+    
+    
+    const route = data.result[0];
+    const pathCoordinates = [];
+    
+    // Закрыть попап
+    wrapper.remove();
+    currentPopup = null;
+    
+    // Собираем координаты начала
+    if (route.begin_pedestrian_path?.geometry?.selection) {
+      pathCoordinates.push(...parseLineString(route.begin_pedestrian_path.geometry.selection));
+    }
+    
+    // Удаление предыдущих маршрутов
+    routeLines.forEach(line => line.destroy());
+    routeLines.length = 0;
+    
+    // Добавляем все отрезки из манёвров
+    for (const maneuver of route.maneuvers || []) {
+      const geometrySegments = maneuver.outcoming_path?.geometry || [];
+      for (const segment of geometrySegments) {
+        const coords = parseLineString(segment.selection);
+        pathCoordinates.push(...coords);
+      }
+    }
+    
+    // Добавляем координаты конца
+    if (route.end_pedestrian_path?.geometry?.selection) {
+      pathCoordinates.push(...parseLineString(route.end_pedestrian_path.geometry.selection));
+    }
+
+    // Отрисовка линии маршрута
+    const line = new mapgl.Polyline(map, {
+      coordinates: pathCoordinates,
+      color: '#0088ff',
+      width: 4,
+    });
+    routeLines.push(line);
+
   });
+
+
+  // добавим каждый отзыв
+  if (Array.isArray(reviews)) {
+    reviews.forEach(review => {
+      const item = document.createElement('li');
+      item.innerHTML = `
+        <strong><a href="src/page/user-profile.html?id=${review.user}">${review.user_name}</a></strong><br>
+        ${review.text ? `<p>${review.text}</p>` : ''}
+        <span>Чистота: ⭐ ${review.rating_clean}</span><br>
+        <span>Удобство: ⭐ ${review.rating_access}</span><br>
+        <span>Доступность: ⭐ ${review.rating_other}</span><br>
+      `;
+      reviewsContainer.appendChild(item);
+    });
+  } else {
+    console.warn('❌ Отзывы не загружены или пришли не в виде массива:', reviews);
+  }
 
   setupReviewForm(wrapper, locationId);
 
@@ -215,7 +314,7 @@ async function setupPopupEvents(wrapper) {
 
   map.on?.('click', destroyPopup);
 
-  document.querySelectorAll('#bottom-menu, .menu-item, #open-form-btn').forEach(el =>
+  document.querySelectorAll('#bottom-menu, .menu-item, #open-form-btn, .report-button').forEach(el =>
     el.addEventListener('click', destroyPopup)
   );
 

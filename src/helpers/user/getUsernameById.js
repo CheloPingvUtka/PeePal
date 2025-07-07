@@ -1,6 +1,11 @@
 export async function getUsernameById(userId) {
+  if (!userId) {
+    console.warn('[getUsernameById] userId is null');
+    return 'Гость';
+  }
+
   try {
-    const res = await fetch(`http://localhost:8000/auth/public/${userId}/`);
+    const res = await fetch(`https://peepal.ru/auth/public/${userId}/`);
     if (!res.ok) throw new Error('Ошибка получения имени пользователя');
 
     const user = await res.json();

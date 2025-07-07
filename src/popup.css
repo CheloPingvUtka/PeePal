@@ -29,6 +29,10 @@
   align-items: start;
 }
 
+.location-title{
+  font-size: 1.1em;
+}
+
 /* старое поведение кнопок: вертикально */
 .presence-buttons {
   display: flex;
@@ -138,7 +142,7 @@
   border-radius: 10px;
 }
 
-.report-button {
+.report-button, .route-button {
   margin-top: 10px;
   width: 100%;
   padding: 8px;
@@ -148,7 +152,9 @@
   cursor: pointer;
 }
 
-
+.route-button{
+  background-color: #83eccb;
+}
 
 .location-photos-scroll {
   display: flex;
@@ -184,12 +190,13 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: auto;
+  height: 100%;
   background-color: rgba(0,0,0,0.6);
   z-index: 999;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  overflow-y: auto;
 }
 
 .modal-content.enhanced-reviews {

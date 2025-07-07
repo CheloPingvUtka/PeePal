@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../src/lk.css">
+  <link rel="stylesheet" href="../styles/lk.css">
   <title>Личный кабинет | PeePal</title>
   <style>
 
@@ -12,7 +12,7 @@
 <body>
   <div class="screen">
     <div class="lk-header">
-      <a href="../index.html">←</a>
+      <a href="../../index.html">←</a>
       Личный кабинет
     </div>
 
@@ -54,8 +54,8 @@
   </div>
 
   <script type="module">
-    import { populateUserInfo } from '../src/helpers/auth/populateUserInfo.js';
-    import { loadUserStats } from '../src/helpers/auth/userStats.js';
+    import { populateUserInfo } from '../../src/helpers/auth/populateUserInfo.js';
+    import { loadUserStats } from '../../src/helpers/auth/userStats.js';
     populateUserInfo();
     loadUserStats();
   </script>

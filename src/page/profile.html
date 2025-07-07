@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../profile.css">
+  <title>Профиль | PeePal</title>
+</head>
+<body>
+  <div class="screen">
+    <div class="section" style="margin-top: 8px;">
+      <div class="header-row">
+        <a href="lk.html" class="back-arrow">←</a>
+        <div class="header-title">Профиль</div>
+      </div>
+      <div class="info">
+        <strong>User</strong><br />
+        Твоё имя
+      </div>
+      <div class="info">
+        +7 911 111-11-11<br />
+        Номер телефона
+      </div>
+      <div class="info">
+        user@pee.pal<br />
+        Email
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="toggle-row">
+        Push-уведомления
+        <div class="switch" id="pushSwitch"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">НАСТРОЙКИ ПРИЛОЖЕНИЯ</div>
+      <div class="select-row">
+        Язык
+        <select class="language-select">
+          <option>Русский</option>
+          <option>English</option>
+          <option>Español</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="arrow-row">
+        Запрос на удаление аккаунта
+        <button class="arrow-button">›</button>
+      </div>
+    </div>
+
+    <div class="bottom-spacer"></div>
+
+    <a class="button-danger" href="/auth/signout/">Выйти</a>
+  </div>
+
+  <script>
+    const switchEl = document.getElementById('pushSwitch');
+    switchEl.addEventListener('click', () => {
+      switchEl.classList.toggle('on');
+    });
+  </script>
+
+  <script type="module">
+    import { populateUserInfo } from '../helpers/auth/populateUserInfo.js';
+    populateUserInfo();
+  </script>
+  
+</body>
+</html>

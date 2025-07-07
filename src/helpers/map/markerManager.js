@@ -1,23 +1,34 @@
 import { mapgl, map } from '../set-map';
-import { showLocationPopup } from './popupManager';
+import { loadAndShowLocationPopup } from './loadAndShowLocationPopup.js';
 
 const activeMarkers = [];
 
 export function drawMarkers(locations) {
   clearMarkers();
+  let i = 0;
 
-  locations.forEach(loc => {
-    const marker = new mapgl.Marker(map, {
-      coordinates: [loc.longitude, loc.latitude],
-    });
+  function drawBatch() {
+    const chunk = 1;
+    for (let j = 0; j < chunk && i < locations.length; j++, i++) {
+      const loc = locations[i];
+      const marker = new mapgl.Marker(map, {
+        coordinates: [loc.longitude, loc.latitude],
+      });
 
-    marker.on('click', () => {
-      showLocationPopup([loc.longitude, loc.latitude], loc);
-    });
+      // ⬇️ обязательно замкни значение loc
+      marker.on('click', ((locationId) => () => {
+        loadAndShowLocationPopup(locationId);
+      })(loc.id));
 
-    activeMarkers.push(marker);
-  });
+      activeMarkers.push(marker);
+    }
+
+    if (i < locations.length) requestAnimationFrame(drawBatch);
+  }
+
+  requestAnimationFrame(drawBatch);
 }
+
 
 function clearMarkers() {
   activeMarkers.forEach(marker => marker.destroy());

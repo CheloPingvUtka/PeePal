@@ -3,8 +3,8 @@ import { setFilters, renderFiltersByCategory } from './filterUtils';
 export async function loadCategoriesAndFilters({ categorySelectId, filtersContainerId }) {
   try {
     const [catRes, filterRes] = await Promise.all([
-      fetch('http://127.0.0.1:8000/api/locations/categories/'),
-      fetch('http://127.0.0.1:8000/api/locations/filters/')
+      fetch('https://peepal.ru/api/locations/categories/'),
+      fetch('https://peepal.ru/api/locations/filters/')
     ]);
 
     const categories = await catRes.json();

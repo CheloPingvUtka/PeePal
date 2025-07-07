@@ -10,7 +10,7 @@ document.getElementById('apply-filters').addEventListener('click', async () => {
 
   const selectedCategory = document.getElementById('location-type-modal').value;
   const selectedFilters = [...document.querySelectorAll('#filters-modal input[name="filters"]:checked')].map(el => el.value);
-  const radius = parseInt(document.getElementById('radius-slider').value); // <---
+  const radius = parseInt(document.getElementById('radius-slider').value);
 
   try {
     const coords = await getUserCoordinates();
@@ -22,6 +22,24 @@ document.getElementById('apply-filters').addEventListener('click', async () => {
   overlay.classList.add('hidden');
   isFilterModalOpen = false;
 });
+
+document.getElementById('select-all').addEventListener('click', async () => {
+  const overlay = document.getElementById('filter-overlay');
+
+  try {
+    const coords = await getUserCoordinates();
+
+    // Загрузка всех локаций — без категории и фильтров, радиус большой
+    await loadLocations(coords, null, [], 10000);
+  } catch (e) {
+    console.error('Ошибка определения координат:', e);
+  }
+
+  // Закрыть попап
+  overlay.classList.add('hidden');
+  isFilterModalOpen = false;
+});
+
 
 
 export async function openFilterModal() {

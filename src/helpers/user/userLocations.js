@@ -1,17 +1,23 @@
 import { getUsernameById } from './getUsernameById.js';
 
-const userId = new URLSearchParams(window.location.search).get('id');
-const username = await getUsernameById(userId);
-
-document.querySelector('#public-username').textContent = username;
-
-
 const urlParams = new URLSearchParams(window.location.search);
 const publicUserId = urlParams.get('id');
 const isPublic = !!publicUserId;
 
+if (isPublic) {
+  try {
+    const username = await getUsernameById(publicUserId);
+    const usernameElement = document.querySelector('#public-username');
+    if (usernameElement) {
+      usernameElement.textContent = username;
+    }
+  } catch (e) {
+    console.error('Ошибка при получении имени пользователя:', e);
+  }
+}
+
 async function getAverageRatingForLocation(locationId) {
-  const res = await fetch(`http://localhost:8000/api/reviews/reviews/by-location/${locationId}`);
+  const res = await fetch(`https://peepal.ru/api/reviews/reviews/by-location/${locationId}`);
   const reviews = await res.json();
 
   if (reviews.length === 0) return null;
@@ -33,8 +39,8 @@ async function getAverageRatingForLocation(locationId) {
 
 async function loadUserLocations() {
   const endpoint = isPublic
-    ? `http://localhost:8000/api/locations/locations/public/by-user/${publicUserId}/`
-    : `http://localhost:8000/api/locations/locations/by_user/`;
+    ? `https://peepal.ru/api/locations/locations/public/by-user/${publicUserId}/`
+    : `https://peepal.ru/api/locations/locations/by_user/`;
 
   const res = await fetch(endpoint, {
     credentials: isPublic ? 'omit' : 'include',
@@ -45,7 +51,7 @@ async function loadUserLocations() {
   container.innerHTML = '';
 
   for (let loc of locations) {
-    const photosRes = await fetch(`http://localhost:8000/api/reviews/photos/?location=${loc.id}`);
+    const photosRes = await fetch(`https://peepal.ru/api/reviews/photos/?location=${loc.id}`);
     const photos = await photosRes.json();
     const photoHtml = photos.map(p => `<img src="${p.photo_url}" class="review-photo" />`).join('');
 

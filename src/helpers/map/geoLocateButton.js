@@ -16,29 +16,44 @@ export function addGeoLocateButton(map) {
   let circle;
 
   function success(pos) {
-    const center = [pos.coords.longitude, pos.coords.latitude];
-    status.textContent = '';
-    if (circle) circle.destroy();
-
-    circle = new mapgl.CircleMarker(map, {
-      coordinates: center,
-      radius: 14,
-      color: '#0088ff',
-      strokeWidth: 4,
-      strokeColor: '#ffffff',
-      stroke2Width: 6,
-      stroke2Color: '#0088ff55',
-    });
-    map.setCenter(center);
-    map.setZoom(16);
+      const center = [pos.coords.longitude, pos.coords.latitude];
+      
+      status.textContent = '';
+      if (circle) {
+          circle.destroy();
+      }
+      
+      circle = new mapgl.CircleMarker(map, {
+          coordinates: center,
+          radius: 14,
+          color: '#0088ff',
+          strokeWidth: 4,
+          strokeColor: '#ffffff',
+          stroke2Width: 6,
+          stroke2Color: '#0088ff55',
+      });
+      map.setCenter(center);
+      map.setZoom(16);
   }
-
+  
   function error() {
-    status.textContent = 'Не удалось получить ваше местоположение';
+      status.textContent = 'Unable to retrieve your location';
+  }
+  
+  function geoFindMe() {
+      if (!navigator.geolocation) {
+          status.textContent = 'Geolocation is not supported by your browser';
+      } else {
+          status.textContent = 'Locating…';
+          navigator.geolocation.getCurrentPosition(success, error, {
+              enableHighAccuracy: false,
+              maximumAge: 60000,
+          });
+      }
   }
 
-  control.getContainer().querySelector('#find-me').addEventListener('click', () => {
-    status.textContent = 'Поиск…';
-    navigator.geolocation.getCurrentPosition(success, error);
-  });
+  control
+  .getContainer()
+  .querySelector('#find-me')
+  .addEventListener('click', geoFindMe);
 }

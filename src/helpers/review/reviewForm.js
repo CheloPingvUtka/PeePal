@@ -2,6 +2,8 @@ import { setupImagePreview, selectedReviewImages } from '../form/imagePreview.js
 import { resetReviewPreview } from './resetReviewPreview.js';
 import { requireAuth } from '../auth/requireAuth.js';
 import { getCurrentUserId } from '../auth/user';
+import { getCookie } from '../getCookie.js';
+import { convertImageToJpeg } from '../convertToJpeg.js';
 
 
 export function setupReviewForm(wrapper, locationId) {
@@ -60,9 +62,13 @@ export function setupReviewForm(wrapper, locationId) {
 
     try {
       // Отправка отзыва
-      const reviewRes = await fetch('http://127.0.0.1:8000/api/reviews/create/', {
+      const reviewRes = await fetch('https://peepal.ru/api/reviews/create/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
         body: JSON.stringify({
           location: locationId,
           user: userId,
@@ -91,12 +97,32 @@ export function setupReviewForm(wrapper, locationId) {
       formData.append('location', locationId);
       formData.append('review', review.id);
 
+      const convertedImages = [];
+
       for (const file of selectedReviewImages) {
+        try {
+          const converted = await convertImageToJpeg(file);
+          convertedImages.push(converted);
+        } catch (err) {
+          console.warn('Ошибка при конвертации отзыва:', err);
+          alert(`Не удалось обработать файл ${file.name}. ${err.message || ''}`);
+        }
+      }
+
+      if (convertedImages.length === 0) {
+        return alert('Не удалось обработать изображения для отзыва');
+      }
+
+      for (const file of convertedImages) {
         formData.append('images', file);
       }
 
-      const photoRes = await fetch('http://127.0.0.1:8000/api/reviews/upload-multiple/', {
+      const photoRes = await fetch('https://peepal.ru/api/reviews/upload-multiple/', {
         method: 'POST',
+        credentials: 'include',
+        headers: { 
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
         body: formData,
       });
 
